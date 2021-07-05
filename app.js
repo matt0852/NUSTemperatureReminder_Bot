@@ -25,8 +25,7 @@ app.get('/', (req, res) => {
     })
 })
 
-app.post('/', (req, res) => {
-    console.log(res.body)
+app.post('/' + process.env.TOKEN, (req, res) => {
     res.send(req.body)
 })
 
