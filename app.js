@@ -34,10 +34,14 @@ app.get('/', (req, res) => {
 })
 
 app.post('/' + process.env.TOKEN, (req, res) => {
-    getTextMessage(req)
-        .then(sendMessage)
-        .then(res.sendStatus(200))
-        .catch(res.sendStatus(200))
+    getTextMessage(req, (message) => {
+        return message
+    }).then(sendMessage, () => {
+        res.sendStatus(200)
+    }).catch(() => {
+        console.log('error')
+        res.sendStatus(200)
+    })
 })
 
 app.listen(process.env.PORT, () => {
