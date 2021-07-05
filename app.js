@@ -10,11 +10,21 @@ const { response } = require('express')
 
 const url = 'https://api.telegram.org/bot' + process.env.TOKEN
 
-sendMessage = async (chat_id, text) => {
+getTextMessage = async (req) => {
+    let text = await req.body.message.text
+    let chat_id = await req.body.message.chat.id
+    let message = {
+        text = text,
+        chat_id = chat_id
+    }
+    return message
+}
+
+sendMessage = async (message) => {
     await axios.get(url + '/sendMessage', {
         params: {
-            chat_id: chat_id,
-            text: text
+            chat_id: message.chat_id,
+            text: message.text
         }
     })
 }
@@ -24,13 +34,10 @@ app.get('/', (req, res) => {
 })
 
 app.post('/' + process.env.TOKEN, (req, res) => {
-    text = req.body.message.text
-    chat_id = req.body.message.chat.id
-    console.log(text)
-    console.log(chat_id)
-    sendMessage(chat_id, text).then(() => {
-        res.sendStatus(200)
-    })
+    getTextMessage(req)
+        .then(sendMessage)
+        .then(res.sendStatus(200))
+        .catch(res.sendStatus(200))
 })
 
 app.listen(process.env.PORT, () => {
