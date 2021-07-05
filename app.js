@@ -6,6 +6,7 @@ app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 
 const axios = require('axios')
+const { response } = require('express')
 
 const url = 'https://api.telegram.org/bot' + process.env.TOKEN
 
@@ -27,7 +28,9 @@ app.post('/' + process.env.TOKEN, (req, res) => {
     chat_id = req.body.message.chat.id
     console.log(text)
     console.log(chat_id)
-    sendMessage(chat_id, text)
+    sendMessage(chat_id, text).then(() => {
+        res.sendStatus(200)
+    })
 })
 
 app.listen(process.env.PORT, () => {
