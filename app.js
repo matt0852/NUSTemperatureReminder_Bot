@@ -33,7 +33,7 @@ sendMessage = async (message) => {
 echoMessage = async (req, res) => {
     let message = await getTextMessage(req)
     if (message) await sendMessage(message)
-    res.send(200)
+    res.sendStatus(200)
 }
 
 app.get('/', (req, res) => {
