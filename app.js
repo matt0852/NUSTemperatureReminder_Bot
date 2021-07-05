@@ -10,14 +10,15 @@ const { response } = require('express')
 
 const url = 'https://api.telegram.org/bot' + process.env.TOKEN
 
-getTextMessage = async (req) => {
-    let text = await req.body.message.text
-    let chat_id = await req.body.message.chat.id
-    let message = {
-        text: text,
-        chat_id: chat_id
+getTextMessage = (req) => {
+    if (req.body.message.text && req.body.message.chat.id) {
+        let message = {
+            text: req.body.message.text,
+            chat_id: req.body.message.chat.id
+        }
+        return message
     }
-    return message
+    else return Error('Bad text message')
 }
 
 sendMessage = async (message) => {
@@ -30,12 +31,16 @@ sendMessage = async (message) => {
 }
 
 echoMessage = (req, res) => {
-    getTextMessage(req).then((message) => {
-        sendMessage(message).then(() => {
+    getTextMessage(req, (message, error) => {
+        if (error) {
+            console.log(error)
             res.sendStatus(200)
-        })
-    }).catch(() => {
-        res.sendStatus(200)
+        }
+        else {
+            sendMessage(message).then(() => {
+                res.sendStatus(200)
+            })
+        }
     })
 }
 
