@@ -14,8 +14,8 @@ getTextMessage = async (req) => {
     let text = await req.body.message.text
     let chat_id = await req.body.message.chat.id
     let message = {
-        text = text,
-        chat_id = chat_id
+        text: text,
+        chat_id: chat_id
     }
     return message
 }
