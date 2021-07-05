@@ -23,7 +23,11 @@ app.get('/', (req, res) => {
 })
 
 app.post('/' + process.env.TOKEN, (req, res) => {
-    console.log(req.body)
+    text = req.body.message.text
+    chat_id = req.body.message.chat.id
+    console.log(text)
+    console.log(chat_id)
+    sendMessage(text, chat_id)
 })
 
 app.listen(process.env.PORT, () => {
