@@ -27,7 +27,7 @@ app.post('/' + process.env.TOKEN, (req, res) => {
     chat_id = req.body.message.chat.id
     console.log(text)
     console.log(chat_id)
-    sendMessage(text, chat_id)
+    sendMessage(chat_id, text)
 })
 
 app.listen(process.env.PORT, () => {
