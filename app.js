@@ -18,7 +18,7 @@ getTextMessage = (req) => {
         }
         return message
     }
-    else return Error('Bad text message')
+    else return null
 }
 
 sendMessage = async (message) => {
@@ -30,18 +30,10 @@ sendMessage = async (message) => {
     })
 }
 
-echoMessage = (req, res) => {
-    getTextMessage(req, (error, message) => {
-        if (error) {
-            console.log(error)
-            res.sendStatus(200)
-        }
-        else {
-            sendMessage(message).then(() => {
-                res.sendStatus(200)
-            })
-        }
-    })
+echoMessage = async (req, res) => {
+    let message = await getTextMessage(req)
+    if (message) await sendMessage(message)
+    res.send(200)
 }
 
 app.get('/', (req, res) => {
