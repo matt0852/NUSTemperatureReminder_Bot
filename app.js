@@ -29,19 +29,22 @@ sendMessage = async (message) => {
     })
 }
 
+echoMessage = (req, res) => {
+    getTextMessage(req).then((message) => {
+        sendMessage(message).then(() => {
+            res.sendStatus(200)
+        })
+    }).catch(() => {
+        res.sendStatus(200)
+    })
+}
+
 app.get('/', (req, res) => {
     res.send('NUS Temperature Reminder Bot, webhook added')
 })
 
 app.post('/' + process.env.TOKEN, (req, res) => {
-    getTextMessage(req, (message) => {
-        return sendMessage(message)
-    }).then(() => {
-        res.sendStatus(200)
-    }).catch(() => {
-        console.log('error')
-        res.sendStatus(200)
-    })
+    echoMessage(req, res)
 })
 
 app.listen(process.env.PORT, () => {
