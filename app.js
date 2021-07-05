@@ -23,7 +23,7 @@ app.get('/', (req, res) => {
 })
 
 app.post('/' + process.env.TOKEN, (req, res) => {
-    res.send(req.body)
+    console.log(req.body)
 })
 
 app.listen(process.env.PORT, () => {
