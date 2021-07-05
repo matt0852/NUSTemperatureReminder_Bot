@@ -19,10 +19,7 @@ sendMessage = async (chat_id, text) => {
 }
 
 app.get('/', (req, res) => {
-    sendMessage(841581825, 'Hello').then(() => {
-        console.log('Message sent')
-        res.send('NUS Temperature Reminder Bot')
-    })
+    res.send('NUS Temperature Reminder Bot, webhook added')
 })
 
 app.post('/' + process.env.TOKEN, (req, res) => {
