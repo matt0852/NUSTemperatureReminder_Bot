@@ -35,8 +35,8 @@ app.get('/', (req, res) => {
 
 app.post('/' + process.env.TOKEN, (req, res) => {
     getTextMessage(req, (message) => {
-        return message
-    }).then(sendMessage, () => {
+        return sendMessage(message)
+    }).then(() => {
         res.sendStatus(200)
     }).catch(() => {
         console.log('error')
