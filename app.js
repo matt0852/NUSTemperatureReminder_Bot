@@ -31,7 +31,7 @@ sendMessage = async (message) => {
 }
 
 echoMessage = (req, res) => {
-    getTextMessage(req, (message, error) => {
+    getTextMessage(req, (error, message) => {
         if (error) {
             console.log(error)
             res.sendStatus(200)
