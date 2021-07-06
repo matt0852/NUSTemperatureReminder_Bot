@@ -35,8 +35,8 @@ manageMessage = async (req, res) => {
     if (message) {
         if (message.text == '/start') {
             let reply = {
-                chat_id = message.chat_id,
-                text = 'Hi! This is the NUS Temperature Reminder Bot. The link https://myaces.nus.edu.sg/htd/htd will be sent at 830am and 1pm daily.'
+                chat_id: message.chat_id,
+                text: 'Hi! This is the NUS Temperature Reminder Bot. The link https://myaces.nus.edu.sg/htd/htd will be sent at 830am and 1pm daily.'
             }
             await sendMessage(reply)
         }
