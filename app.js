@@ -30,9 +30,17 @@ sendMessage = async (message) => {
     })
 }
 
-echoMessage = async (req, res) => {
+manageMessage = async (req, res) => {
     let message = await getTextMessage(req)
-    if (message) await sendMessage(message)
+    if (message) {
+        if (message.text == '/start') {
+            let reply = {
+                chat_id = message.chat_id,
+                text = 'Hi! This is the NUS Temperature Reminder Bot. The link https://myaces.nus.edu.sg/htd/htd will be sent at 830am and 1pm daily.'
+            }
+            await sendMessage(reply)
+        }
+    }
     res.sendStatus(200)
 }
 
@@ -41,7 +49,7 @@ app.get('/', (req, res) => {
 })
 
 app.post('/' + process.env.TOKEN, (req, res) => {
-    echoMessage(req, res)
+    manageMessage(req, res)
 })
 
 app.listen(process.env.PORT, () => {
