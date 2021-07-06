@@ -21,25 +21,24 @@ getTextMessage = (req) => {
     else return null
 }
 
-sendMessage = async (message) => {
+sendMessage = async (chat_id, text) => {
     await axios.get(url + '/sendMessage', {
         params: {
-            chat_id: message.chat_id,
-            text: message.text
+            chat_id: chat_id,
+            text: text
         }
     })
+}
+
+sendWelcomeMessage = async (chat_id) => {
+    let text = 'Hi! This is the NUS Temperature Reminder Bot. The link https://myaces.nus.edu.sg/htd/htd will be sent at 830am and 1pm daily.'
+    await sendMessage(chat_id, text)
 }
 
 manageMessage = async (req, res) => {
     let message = await getTextMessage(req)
     if (message) {
-        if (message.text == '/start') {
-            let reply = {
-                chat_id: message.chat_id,
-                text: 'Hi! This is the NUS Temperature Reminder Bot. The link https://myaces.nus.edu.sg/htd/htd will be sent at 830am and 1pm daily.'
-            }
-            await sendMessage(reply)
-        }
+        if (message.text == '/start') sendWelcomeMessage(message.chat_id)
     }
     res.sendStatus(200)
 }
