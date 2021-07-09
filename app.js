@@ -53,7 +53,11 @@ manageMessage = async (req, res) => {
     res.sendStatus(200)
 }
 
-const job = schedule.scheduleJob('10 11 * * *', () => {
+const job = schedule.scheduleJob('17 11 * * *', () => {
+    sendReminderMessage(lastchat_id)
+}) 
+
+const secondJob = schedule.scheduleJob('20 11 * * *', () => {
     sendReminderMessage(lastchat_id)
 }) 
 
