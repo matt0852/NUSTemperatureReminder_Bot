@@ -12,7 +12,7 @@ const schedule = require('node-schedule')
 
 const url = 'https://api.telegram.org/bot' + process.env.TOKEN
 
-var lastChatId
+var lastChatId = 0
 
 getTextMessage = (req) => {
     if (req.body.message.text && req.body.message.chat.id) {
