@@ -12,49 +12,49 @@ const schedule = require('node-schedule')
 
 const url = 'https://api.telegram.org/bot' + process.env.TOKEN
 
-var lastChatId = 0
+var lastchat_id = 0
 
 getTextMessage = (req) => {
     if (req.body.message.text && req.body.message.chat.id) {
         let message = {
             text: req.body.message.text,
-            chatId: req.body.message.chat.id
+            chat_id: req.body.message.chat.id
         }
         return message
     }
     else return null
 }
 
-sendMessage = async (chatId, text) => {
+sendMessage = async (chat_id, text) => {
     await axios.get(url + '/sendMessage', {
         params: {
-            chatId: chatId,
+            chat_id: chat_id,
             text: text
         }
     })
 }
 
-sendWelcomeMessage = async (chatId) => {
+sendWelcomeMessage = async (chat_id) => {
     let text = 'Hi! This is the NUS Temperature Reminder Bot. The link https://myaces.nus.edu.sg/htd/htd will be sent at 830am and 1pm daily.'
-    await sendMessage(chatId, text)
+    await sendMessage(chat_id, text)
 }
 
-sendReminderMessage = async (chatId) => {
+sendReminderMessage = async (chat_id) => {
     let text = 'Remember to take your temperature! https://myaces.nus.edu.sg/htd/htd'
-    await sendMessage(chatId, text)
+    await sendMessage(chat_id, text)
 }
 
 manageMessage = async (req, res) => {
     let message = await getTextMessage(req)
     if (message) {
-        if (message.text == '/start') sendWelcomeMessage(message.chatId)
+        if (message.text == '/start') sendWelcomeMessage(message.chat_id)
     }
-    lastChatId = message.chatId
+    lastchat_id = message.chat_id
     res.sendStatus(200)
 }
 
 const job = schedule.scheduleJob('0 11 * * *', () => {
-    sendReminderMessage(lastChatId)
+    sendReminderMessage(lastchat_id)
 }) 
 
 app.get('/', (req, res) => {
