@@ -35,7 +35,7 @@ sendMessage = async (chat_id, text) => {
 }
 
 sendWelcomeMessage = async (chat_id) => {
-    let text = 'Hi! This is the NUS Temperature Reminder Bot. The link https://myaces.nus.edu.sg/htd/htd will be sent at 830am and 1pm daily.'
+    let text = 'Hi! This is the NUS Temperature Reminder Bot. Your link will be sent at 8am and 1pm daily.'
     await sendMessage(chat_id, text)
 }
 
@@ -53,11 +53,11 @@ manageMessage = async (req, res) => {
     res.sendStatus(200)
 }
 
-const job = schedule.scheduleJob('17 11 * * *', () => {
+const job = schedule.scheduleJob('0 8 * * *', () => {
     sendReminderMessage(lastchat_id)
 }) 
 
-const secondJob = schedule.scheduleJob('20 11 * * *', () => {
+const secondJob = schedule.scheduleJob('0 13 * * *', () => {
     sendReminderMessage(lastchat_id)
 }) 
 
