@@ -61,7 +61,7 @@ const secondJob = schedule.scheduleJob('0 13 * * *', () => {
 }) 
 
 app.get('/', (req, res) => {
-    res.send('NUS Temperature Reminder Bot, webhook added')
+    res.send('NUS Temperature Reminder Bot, webhook set')
 })
 
 app.post('/' + process.env.TOKEN, (req, res) => {
