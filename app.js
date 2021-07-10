@@ -114,7 +114,7 @@ manageMessage = async (req, res) => {
 
         // user commands
         if (message.text == '/start') {
-            await sendMessage(message.chatId, 'Hi! This is the NUS Temperature Reminder Bot. Your link will be sent at 8am and 1pm daily.')
+            await sendMessage(message.chatId, 'This is the NUS Temperature Reminder Bot. Your links will be sent at 8am and 1pm daily.')
         }
 
         else if (message.text == '/change') {
