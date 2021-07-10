@@ -37,7 +37,7 @@ findUser = async (chatId) => {
 
 createNewUser = async (chatId) => {
     let existingUser = await findUser(chatId)
-    if (existingUser == '') {
+    if (existingUser == null) {
         console.log('New user')
         let user = new userModel({
             chatId: chatId,
