@@ -74,7 +74,7 @@ sendMessage = async (chatId, text) => {
             text: text
         }
     })
-    console.log(res)
+    console.log(res.status)
     return res
 }
 
