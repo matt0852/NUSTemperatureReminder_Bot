@@ -17,7 +17,8 @@ mongoose.connect(process.env.MONGODB_CONNECTION_STRING, { authSource: 'admin', u
 
 let userSchema = new mongoose.Schema({
     chatId: Number,
-    link: String
+    link: String,
+    changeLinksMode: Boolean
 })
 
 let userModel = mongoose.model('User', userSchema)
@@ -33,18 +34,23 @@ findUser = async (chatId) => {
 }
 
 createNewUser = async (chatId) => {
-    let existingUser = await findUser(chatId)
-    if (existingUser) {
-        console.log('User already in database')
-    }
-    else {
-        console.log('New user')
-        let user = new userModel({
-            chatId: chatId,
-            link: defaultLink
-        })
-        await user.save()
-    }
+    let user = new userModel({
+        chatId: chatId,
+        link: defaultLink,
+        changeLinksMode: false
+    })
+    await user.save()
+}
+
+updateChangeLinksMode = async (chatId, changeLinksMode) => {
+    let user = await userModel.findOneAndUpdate({ chatId: chatId }, { changeLinksMode: changeLinksMode }, { new: true })
+    return user
+}
+
+changeLinks = async (message) => {
+    let user = findUser(message.chatId)
+    console.log(user)
+    console.log(message.text)
 }
 
 // message methods
@@ -76,15 +82,10 @@ sendMessage = async (chatId, text) => {
     return res.status
 }
 
-sendWelcomeMessage = async (chatId) => {
-    let text = 'Hi! This is the NUS Temperature Reminder Bot. Your link will be sent at 8am and 1pm daily.'
-    await sendMessage(chatId, text)
-}
-
 sendReminderMessage = async () => {
     let users = await userModel.find()
     for (const user of users) {
-        let text = 'Remember to take your temperature! ' + user.link
+        let text = 'Remember to take your temperature! \n' + user.link
         await sendMessage(user.chatId, text)
     }
 }
@@ -92,14 +93,38 @@ sendReminderMessage = async () => {
 manageMessage = async (req, res) => {
     let message = await getTextMessage(req)
     if (message) {
+        // find the user who sent the message, if any
+        let user = await findUser(message.chatId)
+
+        // if the user exists, check if the user is currently changing the links
+        if (user) {
+            console.log('Existing user')
+            if (user.changeLinksMode) {
+                console.log('Changing links')
+                await updateChangeLinksMode(message.chatId, false)
+                await changeLinks(message)
+                await sendMessage(message.chatId, 'Link(s) have been updated')
+            }
+        }
+
+        // otherwise, make a new user
+        else {
+            console.log('New user')
+            await createNewUser(message.chatId)
+        }
+
         // user commands
         if (message.text == '/start') {
-            await createNewUser(message.chatId)
-            await sendWelcomeMessage(message.chatId)
+            await sendMessage(message.chatId, 'Hi! This is the NUS Temperature Reminder Bot. Your link will be sent at 8am and 1pm daily.')
         }
-        
+
+        else if (message.text = '/change') {
+            updateChangeLinksMode(message.chatId, true)
+            await sendMessage(message.chatId, 'Please enter your new link(s):')
+        }
+
         // admin commands
-        else if (message.text = '/test') {
+        else if (message.text = '/matt0852_test') {
             await sendReminderMessage()
         }
     }
