@@ -122,9 +122,12 @@ manageMessage = async (req, res) => {
             await sendMessage(message.chatId, 'Please enter your new link(s):')
         }
 
-        // admin commands
-        else if (message.text == '/matt0852_test') {
-            await sendReminderMessage()
+        else if (message.text == '/github') {
+            await sendMessage(message.chatId, 'Check out the source code here: https://github.com/matt0852/NUSTemperatureReminder_Bot')
+        }
+
+        else if (message.text == '/bug') {
+            await sendMessage(message.chatId, 'Report a bug to my Telegram handle: @matt0852')
         }
     }
     res.sendStatus(200)
