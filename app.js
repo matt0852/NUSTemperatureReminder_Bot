@@ -25,8 +25,6 @@ let userModel = mongoose.model('User', userSchema)
 const url = 'https://api.telegram.org/bot' + process.env.TOKEN
 const defaultLink = 'https://myaces.nus.edu.sg/htd/htd'
 
-var lastChatId = 0
-
 // db methods
 
 findUser = async (chatId) => {
@@ -84,9 +82,9 @@ sendWelcomeMessage = async (chatId) => {
 }
 
 sendReminderMessage = async () => {
-    let text = 'Remember to take your temperature! ' + defaultLink
     let users = await userModel.find()
     for (const user of users) {
+        let text = 'Remember to take your temperature! ' + user.link
         console.log(user)
         await sendMessage(user.chatId, text)
     }
@@ -95,11 +93,16 @@ sendReminderMessage = async () => {
 manageMessage = async (req, res) => {
     let message = await getTextMessage(req)
     if (message) {
+        // user commands
         if (message.text == '/start') {
             await createNewUser(message.chatId)
             await sendWelcomeMessage(message.chatId)
         }
-        lastChatId = message.chatId
+
+        // admin commands
+        else if (message.text = '/test') {
+            await sendReminderMessage()
+        }
     }
     res.sendStatus(200)
 }
@@ -110,7 +113,7 @@ const job = schedule.scheduleJob('0 8 * * *', () => {
     sendReminderMessage()
 })
 
-const secondJob = schedule.scheduleJob('03 11 * * *', () => {
+const secondJob = schedule.scheduleJob('0 13 * * *', () => {
     sendReminderMessage()
 })
 
