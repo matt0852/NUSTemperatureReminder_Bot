@@ -9,9 +9,35 @@ const axios = require('axios')
 
 const schedule = require('node-schedule')
 
+const mongoose = require('mongoose')
+mongoose.connect(process.env.MONGODB_CONNECTION_STRING, {useNewUrlParser: true, useUnifiedTopology: true}, (err) => {
+    if (err) console.log(err)
+    else console.log('Connected to mongodb')
+})
+
+let userSchema = new mongoose.Schema({
+    chatId: Number,
+    link: String
+})
+
+let userModel = mongoose.model('User', userSchema)
+
 const url = 'https://api.telegram.org/bot' + process.env.TOKEN
+const defaultLink = 'https://myaces.nus.edu.sg/htd/htd'
 
 var lastChatId = 0
+
+// db methods
+
+createNewUser = async (chatId) => {
+    let user = new userModel({
+        chatId: chatId,
+        link: defaultLink
+    })
+    await user.save()
+}
+
+// message methods
 
 getTextMessage = (req) => {
     if (req.body.message.text && req.body.message.chat.id) {
@@ -39,18 +65,23 @@ sendWelcomeMessage = async (chatId) => {
 }
 
 sendReminderMessage = async (chatId) => {
-    let text = 'Remember to take your temperature! https://myaces.nus.edu.sg/htd/htd'
+    let text = 'Remember to take your temperature! ' + defaultLink
     await sendMessage(chatId, text)
 }
 
 manageMessage = async (req, res) => {
     let message = await getTextMessage(req)
     if (message) {
-        if (message.text == '/start') sendWelcomeMessage(message.chatId)
+        if (message.text == '/start') {
+            await createNewUser(message.chatId)
+            await sendWelcomeMessage(message.chatId)
+        }
     }
     lastChatId = message.chatId
     res.sendStatus(200)
 }
+
+// scheduler methods
 
 const job = schedule.scheduleJob('0 8 * * *', () => {
     sendReminderMessage(lastChatId)
@@ -59,6 +90,8 @@ const job = schedule.scheduleJob('0 8 * * *', () => {
 const secondJob = schedule.scheduleJob('0 13 * * *', () => {
     sendReminderMessage(lastChatId)
 }) 
+
+// express routes
 
 app.get('/', (req, res) => {
     res.send('NUS Temperature Reminder Bot. Find it at http://t.me/NUSTemperatureReminder_Bot')
