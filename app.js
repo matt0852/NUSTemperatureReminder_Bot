@@ -49,10 +49,9 @@ updateChangeLinksMode = async (chatId, changeLinksMode) => {
     return user
 }
 
-changeLinks = async (message) => {
-    let user = await findUser(message.chatId)
-    console.log(user)
-    console.log(message.text)
+changeUserLinks = async (message) => {
+    let user = await userModel.findOneAndUpdate({ chatId: message.chatId }, { link: message.text }, { new: true })
+    return user
 }
 
 // message methods
@@ -100,18 +99,15 @@ manageMessage = async (req, res) => {
 
         // if the user exists, check if the user is currently changing the links
         if (user) {
-            console.log('Existing user')
             if (user.changeLinksMode == true) {
-                console.log('Changing links')
                 await updateChangeLinksMode(message.chatId, false)
-                await changeLinks(message)
-                await sendMessage(message.chatId, 'Link(s) have been updated')
+                await changeUserLinks(message)
+                await sendMessage(message.chatId, 'Link(s) have been updated.')
             }
         }
 
         // otherwise, make a new user
         else {
-            console.log('New user')
             await createNewUser(message.chatId)
         }
 
