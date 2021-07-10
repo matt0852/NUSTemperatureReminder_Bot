@@ -68,12 +68,14 @@ getTextMessage = (req) => {
 }
 
 sendMessage = async (chatId, text) => {
-    await axios.get(url + '/sendMessage', {
+    let res = await axios.get(url + '/sendMessage', {
         params: {
             chat_id: chatId,
             text: text
         }
     })
+    console.log(res)
+    return res
 }
 
 sendWelcomeMessage = async (chatId) => {
