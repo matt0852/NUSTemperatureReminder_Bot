@@ -50,7 +50,7 @@ updateChangeLinksMode = async (chatId, changeLinksMode) => {
 }
 
 changeLinks = async (message) => {
-    let user = findUser(message.chatId)
+    let user = await findUser(message.chatId)
     console.log(user)
     console.log(message.text)
 }
