@@ -120,13 +120,13 @@ manageMessage = async (req, res) => {
             await sendMessage(message.chatId, 'Hi! This is the NUS Temperature Reminder Bot. Your link will be sent at 8am and 1pm daily.')
         }
 
-        else if (message.text = '/change') {
+        else if (message.text == '/change') {
             await updateChangeLinksMode(message.chatId, true)
             await sendMessage(message.chatId, 'Please enter your new link(s):')
         }
 
         // admin commands
-        else if (message.text = '/matt0852_test') {
+        else if (message.text == '/matt0852_test') {
             await sendReminderMessage()
         }
     }
