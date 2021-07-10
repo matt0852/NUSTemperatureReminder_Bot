@@ -25,6 +25,7 @@ let userSchema = new mongoose.Schema({
 
 let userModel = mongoose.model('User', userSchema)
 
+const bot = '@NUSTemperatureReminder_Bot'
 const url = 'https://api.telegram.org/bot' + process.env.TOKEN
 const defaultLink = 'https://myaces.nus.edu.sg/htd/htd'
 
@@ -113,20 +114,20 @@ manageMessage = async (req, res) => {
         }
 
         // user commands
-        if (message.text == '/start') {
+        if (message.text == '/start' || message.text == '/start' + bot) {
             await sendMessage(message.chatId, 'This is the NUS Temperature Reminder Bot. Your links will be sent at 8am and 1pm daily.')
         }
 
-        else if (message.text == '/change') {
+        else if (message.text == '/change' || message.text == '/change' + bot) {
             await updateChangeLinksMode(message.chatId, true)
             await sendMessage(message.chatId, 'Please enter your new link(s):')
         }
 
-        else if (message.text == '/github') {
+        else if (message.text == '/github' || message.text == '/github' + bot) {
             await sendMessage(message.chatId, 'Check out the source code here: https://github.com/matt0852/NUSTemperatureReminder_Bot')
         }
 
-        else if (message.text == '/bug') {
+        else if (message.text == '/bug' || message.text == '/bug' + bot) {
             await sendMessage(message.chatId, 'Report a bug to my Telegram handle: @matt0852')
         }
     }
