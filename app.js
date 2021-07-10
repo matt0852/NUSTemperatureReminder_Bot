@@ -55,6 +55,10 @@ changeUserLinks = async (message) => {
     return user
 }
 
+deleteUser = async (chatId) => {
+    await userModel.findOneAndDelete({ chatId: chatId })
+}
+
 // message methods
 
 getTextMessage = (req) => {
@@ -80,7 +84,6 @@ sendMessage = async (chatId, text) => {
             text: text
         }
     })
-    console.log(res.status)
     return res.status
 }
 
@@ -94,7 +97,12 @@ sendReminderMessage = async () => {
     let users = await userModel.find()
     for (const user of users) {
         let text = 'Remember to take your temperature! \n' + user.link
-        await sendMessage(user.chatId, text)
+        let res = await sendMessage(user.chatId, text)
+        console.log(res)
+        if (res == 404) {
+            await deleteUser(user.chatId)
+            console.log('User deleted')
+        }
     }
 }
 
