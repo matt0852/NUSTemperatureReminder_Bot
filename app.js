@@ -93,8 +93,8 @@ manageMessage = async (req, res) => {
             await createNewUser(message.chatId)
             await sendWelcomeMessage(message.chatId)
         }
+        lastChatId = message.chatId
     }
-    lastChatId = message.chatId
     res.sendStatus(200)
 }
 
