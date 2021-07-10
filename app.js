@@ -75,7 +75,7 @@ sendMessage = async (chatId, text) => {
         }
     })
     console.log(res.status)
-    return res
+    return res.status
 }
 
 sendWelcomeMessage = async (chatId) => {
@@ -83,9 +83,12 @@ sendWelcomeMessage = async (chatId) => {
     await sendMessage(chatId, text)
 }
 
-sendReminderMessage = async (chatId) => {
+sendReminderMessage = async () => {
     let text = 'Remember to take your temperature! ' + defaultLink
-    await sendMessage(chatId, text)
+    users = await userModel.find()
+    for (var user in users) {
+        await sendMessage(user.chatId, text)
+    }
 }
 
 manageMessage = async (req, res) => {
@@ -103,11 +106,11 @@ manageMessage = async (req, res) => {
 // scheduler methods
 
 const job = schedule.scheduleJob('0 8 * * *', () => {
-    sendReminderMessage(lastChatId)
+    sendReminderMessage()
 })
 
-const secondJob = schedule.scheduleJob('0 13 * * *', () => {
-    sendReminderMessage(lastChatId)
+const secondJob = schedule.scheduleJob('56 10 * * *', () => {
+    sendReminderMessage()
 })
 
 // express routes
