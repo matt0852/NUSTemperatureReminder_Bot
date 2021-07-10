@@ -85,7 +85,6 @@ sendReminderMessage = async () => {
     let users = await userModel.find()
     for (const user of users) {
         let text = 'Remember to take your temperature! ' + user.link
-        console.log(user)
         await sendMessage(user.chatId, text)
     }
 }
@@ -98,7 +97,7 @@ manageMessage = async (req, res) => {
             await createNewUser(message.chatId)
             await sendWelcomeMessage(message.chatId)
         }
-
+        
         // admin commands
         else if (message.text = '/test') {
             await sendReminderMessage()
