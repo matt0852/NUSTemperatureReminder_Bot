@@ -10,7 +10,7 @@ const axios = require('axios')
 const schedule = require('node-schedule')
 
 const mongoose = require('mongoose')
-mongoose.connect(process.env.MONGODB_CONNECTION_STRING, {authSource: 'admin', useNewUrlParser: true, useUnifiedTopology: true}, (err) => {
+mongoose.connect(process.env.MONGODB_CONNECTION_STRING, { authSource: 'admin', useNewUrlParser: true, useUnifiedTopology: true }, (err) => {
     if (err) console.log(err)
     else console.log('Connected to mongodb')
 })
@@ -30,22 +30,22 @@ var lastChatId = 0
 // db methods
 
 findUser = async (chatId) => {
-    let user = await userModel.findOne({chatId: chatId})
+    let user = await userModel.findOne({ chatId: chatId })
     return user
 }
 
 createNewUser = async (chatId) => {
     let existingUser = await findUser(chatId)
-    if (existingUser == null) {
+    if (existingUser) {
+        console.log('User already in database')
+    }
+    else {
         console.log('New user')
         let user = new userModel({
             chatId: chatId,
             link: defaultLink
         })
         await user.save()
-    }
-    else {
-        console.log('User already in database')
     }
 }
 
@@ -97,11 +97,11 @@ manageMessage = async (req, res) => {
 
 const job = schedule.scheduleJob('0 8 * * *', () => {
     sendReminderMessage(lastChatId)
-}) 
+})
 
 const secondJob = schedule.scheduleJob('0 13 * * *', () => {
     sendReminderMessage(lastChatId)
-}) 
+})
 
 // express routes
 
