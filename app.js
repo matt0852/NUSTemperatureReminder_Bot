@@ -99,6 +99,7 @@ manageMessage = async (req, res) => {
 
         // if the user exists, check if the user is currently changing the links
         if (user) {
+            console.log('User exists')
             if (user.changeLinksMode == true) {
                 await updateChangeLinksMode(message.chatId, false)
                 await changeUserLinks(message)
