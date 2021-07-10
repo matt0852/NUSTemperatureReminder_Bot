@@ -84,6 +84,12 @@ sendMessage = async (chatId, text) => {
     return res.status
 }
 
+sendTestMessage = async (chatId) => {
+    let user = await findUser(chatId)
+    let text = 'Remember to take your temperature! \n' + user.link
+    await sendMessage(user.chatId, text)
+}
+
 sendReminderMessage = async () => {
     let users = await userModel.find()
     for (const user of users) {
@@ -104,7 +110,7 @@ manageMessage = async (req, res) => {
             if (user.changeLinksMode == true) {
                 await updateChangeLinksMode(message.chatId, false)
                 await changeUserLinks(message)
-                await sendMessage(message.chatId, 'Link(s) have been updated.')
+                await sendMessage(message.chatId, 'Your link(s) have been updated.')
             }
         }
 
@@ -115,16 +121,28 @@ manageMessage = async (req, res) => {
 
         // user commands
         if (message.text == '/start' || message.text == '/start' + bot) {
-            await sendMessage(message.chatId, 'This is the NUS Temperature Reminder Bot. Your links will be sent at 8am and 1pm daily. \nUse /change to change the links that the bot will send.')
+            await sendMessage(message.chatId, 'This is the NUS Temperature Reminder Bot. \
+            Your temperature taking link(s) will be sent at 8am and 1pm daily. \
+            \nUse /change to change the links that the bot will send. \
+            \n Use /test to send a sample reminder message. \
+            \nUse /bug to report any bugs. \
+            \nUse /github to view the source code. \
+            \n \
+            \nTo view this message again, use /start')
         }
 
         else if (message.text == '/change' || message.text == '/change' + bot) {
             await updateChangeLinksMode(message.chatId, true)
-            await sendMessage(message.chatId, 'Please enter your new link(s):')
+            await sendMessage(message.chatId, 'Please send your new link(s):')
+        }
+
+        else if (message.text == '/test' || message.text == '/test' + bot) {
+            await sendTestMessage(message.chatId)
         }
 
         else if (message.text == '/github' || message.text == '/github' + bot) {
-            await sendMessage(message.chatId, 'Check out the source code here: https://github.com/matt0852/NUSTemperatureReminder_Bot')
+            await sendMessage(message.chatId, 'Check out the source code here: \
+            https://github.com/matt0852/NUSTemperatureReminder_Bot')
         }
 
         else if (message.text == '/bug' || message.text == '/bug' + bot) {
