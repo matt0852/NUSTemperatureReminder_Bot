@@ -86,8 +86,8 @@ sendWelcomeMessage = async (chatId) => {
 sendReminderMessage = async () => {
     let text = 'Remember to take your temperature! ' + defaultLink
     let users = await userModel.find()
-    console.log(users)
-    for (var user in users) {
+    for (const user of users) {
+        console.log(user)
         await sendMessage(user.chatId, text)
     }
 }
@@ -110,7 +110,7 @@ const job = schedule.scheduleJob('0 8 * * *', () => {
     sendReminderMessage()
 })
 
-const secondJob = schedule.scheduleJob('59 10 * * *', () => {
+const secondJob = schedule.scheduleJob('03 11 * * *', () => {
     sendReminderMessage()
 })
 
