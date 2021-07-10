@@ -10,7 +10,7 @@ const axios = require('axios')
 const schedule = require('node-schedule')
 
 const mongoose = require('mongoose')
-mongoose.connect(process.env.MONGODB_CONNECTION_STRING, {useNewUrlParser: true, useUnifiedTopology: true}, (err) => {
+mongoose.connect(process.env.MONGODB_CONNECTION_STRING, {authSource: 'admin', useNewUrlParser: true, useUnifiedTopology: true}, (err) => {
     if (err) console.log(err)
     else console.log('Connected to mongodb')
 })
