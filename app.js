@@ -52,14 +52,19 @@ createNewUser = async (chatId) => {
 // message methods
 
 getTextMessage = (req) => {
-    if (req.body.message.text && req.body.message.chat.id) {
-        let message = {
-            text: req.body.message.text,
-            chatId: req.body.message.chat.id
+    try {
+        if (req.body.message.text && req.body.message.chat.id) {
+            let message = {
+                text: req.body.message.text,
+                chatId: req.body.message.chat.id
+            }
+            return message
         }
-        return message
+        else return null
     }
-    else return null
+    catch {
+        return null
+    }
 }
 
 sendMessage = async (chatId, text) => {
