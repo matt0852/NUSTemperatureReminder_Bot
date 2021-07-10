@@ -121,7 +121,7 @@ manageMessage = async (req, res) => {
         }
 
         else if (message.text = '/change') {
-            updateChangeLinksMode(message.chatId, true)
+            await updateChangeLinksMode(message.chatId, true)
             await sendMessage(message.chatId, 'Please enter your new link(s):')
         }
 
