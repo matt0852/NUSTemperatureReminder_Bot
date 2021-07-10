@@ -29,12 +29,25 @@ var lastChatId = 0
 
 // db methods
 
-createNewUser = async (chatId) => {
-    let user = new userModel({
-        chatId: chatId,
-        link: defaultLink
+findUser = async (chatId) => {
+    userModel.findOne({chatId: chatId}).then((user) => {
+        return user
     })
-    await user.save()
+}
+
+createNewUser = async (chatId) => {
+    let existingUser = await findUser(chatId)
+    if (existingUser == '') {
+        console.log('New user')
+        let user = new userModel({
+            chatId: chatId,
+            link: defaultLink
+        })
+        await user.save()
+    }
+    else {
+        console.log('User already in database')
+    }
 }
 
 // message methods
