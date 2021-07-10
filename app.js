@@ -30,9 +30,8 @@ var lastChatId = 0
 // db methods
 
 findUser = async (chatId) => {
-    userModel.findOne({chatId: chatId}).then((user) => {
-        return user
-    })
+    let user = await userModel.findOne({chatId: chatId})
+    return user
 }
 
 createNewUser = async (chatId) => {
