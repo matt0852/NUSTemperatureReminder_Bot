@@ -10,10 +10,12 @@ const axios = require('axios')
 const schedule = require('node-schedule')
 
 const mongoose = require('mongoose')
-mongoose.connect(process.env.MONGODB_CONNECTION_STRING, { authSource: 'admin', useNewUrlParser: true, useUnifiedTopology: true }, (err) => {
-    if (err) console.log(err)
-    else console.log('Connected to mongodb')
-})
+mongoose.connect(process.env.MONGODB_CONNECTION_STRING,
+    { authSource: 'admin', useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false },
+    (err) => {
+        if (err) console.log(err)
+        else console.log('Connected to mongodb')
+    })
 
 let userSchema = new mongoose.Schema({
     chatId: Number,
@@ -99,7 +101,7 @@ manageMessage = async (req, res) => {
         // if the user exists, check if the user is currently changing the links
         if (user) {
             console.log('Existing user')
-            if (user.changeLinksMode) {
+            if (user.changeLinksMode == true) {
                 console.log('Changing links')
                 await updateChangeLinksMode(message.chatId, false)
                 await changeLinks(message)
