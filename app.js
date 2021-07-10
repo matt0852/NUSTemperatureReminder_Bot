@@ -110,7 +110,7 @@ const job = schedule.scheduleJob('0 8 * * *', () => {
     sendReminderMessage()
 })
 
-const secondJob = schedule.scheduleJob('57 10 * * *', () => {
+const secondJob = schedule.scheduleJob('59 10 * * *', () => {
     sendReminderMessage()
 })
 
