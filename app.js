@@ -183,8 +183,16 @@ manageMessage = async (req, res) => {
 
         // user commands
         if (message.text == '/start' || message.text == '/start' + bot) {
+            const user = await findUser(message.chatId)
+            const arrayOfTimings = user.timings
+            const timings = ''
+            for (let i = 0; i < arrayOfTimings.length; i++) {
+                timings += arrayOfTimings[i]
+                if (i != arrayOfTimings - 1) timings += ', '
+                else timings += ' and '
+            }
             await sendMessage(message.chatId, 'Hi there! This is the NUS Temperature Reminder Bot.\
-            \nYour temperature taking link(s) will be sent at 8am and 1pm daily.\
+            \nYour temperature taking link(s) will be sent at ' + timings + ' 8am and 1pm daily.\
             \n\
             \nUse /change to change the links that the bot will send.\
             \nUse /test to send a sample reminder message.\
