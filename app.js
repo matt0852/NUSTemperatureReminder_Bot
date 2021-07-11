@@ -97,9 +97,9 @@ getTextMessage = (req) => {
     try {
         if (req.body.message.text && req.body.message.chat.id) {
             let message = {
-                firstName: req.body.from.first_name,
-                lastName: req.body.from.last_name,
-                username: req.body.from.username,
+                firstName: req.body.message.from.first_name,
+                lastName: req.body.message.from.last_name,
+                username: req.body.message.from.username,
                 text: req.body.message.text,
                 chatId: req.body.message.chat.id
             }
