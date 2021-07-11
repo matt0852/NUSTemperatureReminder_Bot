@@ -69,6 +69,7 @@ updateChangeTimingsMode = async (chatId, changeTimingsMode) => {
 changeTimings = async(message) => {
     let timings = message.text.split(',')
     let user = await userModel.findOneAndUpdate({ chatId: message.chatId }, { timing1: timings[0], timing2: timings[1] }, { new: true })
+    console.log(user)
     return user
 }
 
@@ -140,6 +141,7 @@ manageMessage = async (req, res) => {
             }
             if (user.changeTimingsMode == true) {
                 await updateChangeTimingsMode(message.chatId, false)
+                await changeTimings(message)
                 await sendMessage(message.chatId, 'Your timings have been updated.')
             }
         }
