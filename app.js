@@ -169,11 +169,11 @@ manageMessage = async (req, res) => {
 // scheduler methods
 
 const job = schedule.scheduleJob('0 8 * * *', () => {
-    await sendReminderMessage()
+    sendReminderMessage()
 })
 
 const secondJob = schedule.scheduleJob('0 13 * * *', () => {
-    await sendReminderMessage()
+    sendReminderMessage()
 })
 
 // express routes
