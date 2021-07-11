@@ -166,12 +166,12 @@ manageMessage = async (req, res) => {
             if (user.changeLinksMode == true) {
                 await updateChangeLinksMode(message.chatId, false)
                 await changeUserLinks(message)
-                await sendMessage(message.chatId, 'Your link(s) have been updated.')
+                await sendMessage(message.chatId, 'Your link(s) have been updated. Use /test to send a sample reminder message.')
             }
             if (user.changeTimingsMode == true) {
                 await updateChangeTimingsMode(message.chatId, false)
                 const user = await changeTimings(message)
-                if (user) await sendMessage(message.chatId, 'Your timings have been updated.')
+                if (user) await sendMessage(message.chatId, 'Your timings have been updated. Use /help to see your current timings.')
                 else await sendMessage(message.chatId, 'Error - wrong formatting. Try again with /timing.')
             }
         }
@@ -182,7 +182,7 @@ manageMessage = async (req, res) => {
         }
 
         // user commands
-        if (message.text == '/start' || message.text == '/start' + bot) {
+        if (message.text == '/start' || message.text == '/start' + bot || message.text == '/help' || message.text == '/help' + bot) {
             const user = await findUser(message.chatId)
             const arrayOfTimings = user.timings
             var timings = ''
@@ -196,11 +196,12 @@ manageMessage = async (req, res) => {
             \nYour temperature taking link(s) will be sent at ' + timings + ' daily.\
             \n\
             \nUse /change to change the links that the bot will send.\
+            \nUse /timing to change the timings that the bot will send.\
             \nUse /test to send a sample reminder message.\
             \nUse /bug to report any bugs.\
             \nUse /github to view the source code.\
             \n\
-            \nTo view this message again, use /start')
+            \nTo view this message again, use /help')
         }
 
         else if (message.text == '/change' || message.text == '/change' + bot) {
@@ -214,8 +215,8 @@ manageMessage = async (req, res) => {
 
         else if (message.text == '/timing' || message.text == '/timing' + bot) {
             await updateChangeTimingsMode(message.chatId, true)
-            await sendMessage(message.chatId, 'Please send as many new timings as you want in the format HHMM separated by commas only.\
-            \nFor instance, 0800,1300,2045')
+            await sendMessage(message.chatId, 'Please send as many new timings as you want in the format HHMM separated by commas only. For instance:\
+            \n0800,1300,2045')
         }
 
         else if (message.text == '/github' || message.text == '/github' + bot) {
