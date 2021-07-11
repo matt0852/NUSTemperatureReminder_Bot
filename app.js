@@ -20,8 +20,7 @@ mongoose.connect(process.env.MONGODB_CONNECTION_STRING,
 let userSchema = new mongoose.Schema({
     chatId: Number,
     link: String,
-    timing1: String,
-    timing2: String,
+    timings: [String],
     changeLinksMode: Boolean,
     changeTimingsMode: Boolean
 })
@@ -43,8 +42,7 @@ createNewUser = async (chatId) => {
     let user = new userModel({
         chatId: chatId,
         link: defaultLink,
-        timing1: '0800',
-        timing2: '1300',
+        timings: ['0800', '1300'],
         changeLinksMode: false,
         changeTimingsMode: false
     })
@@ -66,10 +64,12 @@ updateChangeTimingsMode = async (chatId, changeTimingsMode) => {
     return user
 }
 
-changeTimings = async(message) => {
+changeTimings = async (message) => {
     let timings = message.text.split(',')
-    let user = await userModel.findOneAndUpdate({ chatId: message.chatId }, { timing1: timings[0], timing2: timings[1] }, { new: true })
-    console.log(user)
+    for (let time in timings) {
+        if (length(time) != 4 || Number(time) == NaN) return
+    }
+    let user = await userModel.findOneAndUpdate({ chatId: message.chatId }, { timings: timings }, { new: true })
     return user
 }
 
@@ -141,8 +141,9 @@ manageMessage = async (req, res) => {
             }
             if (user.changeTimingsMode == true) {
                 await updateChangeTimingsMode(message.chatId, false)
-                await changeTimings(message)
-                await sendMessage(message.chatId, 'Your timings have been updated.')
+                let user = await changeTimings(message)
+                if (user) await sendMessage(message.chatId, 'Your timings have been updated.')
+                else await sendMessage(message.chatId, 'Error - wrong formatting. Try again with /timing.')
             }
         }
 
