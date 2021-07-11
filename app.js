@@ -99,7 +99,7 @@ sendReminderMessage = async () => {
         let text = 'Remember to take your temperature! \n' + user.link
         let res = await sendMessage(user.chatId, text)
         console.log(res)
-        if (res == 404) {
+        if (res != 200) {
             await deleteUser(user.chatId)
             console.log('User deleted')
         }
@@ -114,7 +114,6 @@ manageMessage = async (req, res) => {
 
         // if the user exists, check if the user is currently changing the links
         if (user) {
-            console.log('User exists')
             if (user.changeLinksMode == true) {
                 await updateChangeLinksMode(message.chatId, false)
                 await changeUserLinks(message)
@@ -157,6 +156,12 @@ manageMessage = async (req, res) => {
         else if (message.text == '/bug' || message.text == '/bug' + bot) {
             await sendMessage(message.chatId, 'Report a bug to my Telegram handle: @matt0852')
         }
+
+        // admin commands
+
+        else if (message.text == '/' + process.env.ADMIN + '_test') {
+            await sendReminderMessage()
+        }
     }
     res.sendStatus(200)
 }
@@ -164,11 +169,11 @@ manageMessage = async (req, res) => {
 // scheduler methods
 
 const job = schedule.scheduleJob('0 8 * * *', () => {
-    sendReminderMessage()
+    await sendReminderMessage()
 })
 
 const secondJob = schedule.scheduleJob('0 13 * * *', () => {
-    sendReminderMessage()
+    await sendReminderMessage()
 })
 
 // express routes
