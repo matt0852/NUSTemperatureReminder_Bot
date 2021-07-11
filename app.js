@@ -8,6 +8,7 @@ app.use(express.json())
 const axios = require('axios')
 
 const schedule = require('node-schedule')
+const date_ob = new Date()
 
 const mongoose = require('mongoose')
 mongoose.connect(process.env.MONGODB_CONNECTION_STRING,
@@ -144,7 +145,10 @@ sendReminderMessage = async () => {
 }
 
 sendReminders = async () => {
-    console.log('One minute has passed')
+    let hours = ('0' + date_ob.getHours()).slice(-2);
+    let minutes = ('0' + date_ob.getMinutes()).slice(-2);
+    let time = hours + minutes
+    console.log(time)
 }
 
 manageMessage = async (req, res) => {
