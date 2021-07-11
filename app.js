@@ -161,8 +161,9 @@ manageMessage = async (req, res) => {
         }
 
         else if (message.text == '/timing' || message.text == '/timing' + bot) {
-            await updateChangeTimingsMode(message.chatId, true)
-            await sendMessage(message.chatId, 'Please send two new timings in the format HHMM,HHMM\nFor instance, 0800,1300)')
+            let user = await updateChangeTimingsMode(message.chatId, true)
+            console.log(user)
+            await sendMessage(message.chatId, 'Please send two new timings in the format HHMM,HHMM\nFor instance, 0800,1300')
         }
 
         else if (message.text == '/github' || message.text == '/github' + bot) {
