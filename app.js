@@ -205,7 +205,8 @@ manageMessage = async (req, res) => {
 
         else if (message.text == '/timing' || message.text == '/timing' + bot) {
             await updateChangeTimingsMode(message.chatId, true)
-            await sendMessage(message.chatId, 'Please send two new timings in the format HHMM,HHMM\nFor instance, 0800,1300')
+            await sendMessage(message.chatId, 'Please send as many new timings as you want in the format HHMM separated by commas only.\
+            \nFor instance, 0800,1300,2045')
         }
 
         else if (message.text == '/github' || message.text == '/github' + bot) {
