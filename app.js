@@ -122,25 +122,14 @@ sendMessage = async (chatId, text) => {
     return res.status
 }
 
-sendTestMessage = async (chatId) => {
-    const user = await findUser(chatId)
+sendReminderMessage = async (chatId) => {
     const text = 'Remember to take your temperature! \n' + user.link
     await sendMessage(user.chatId, text)
 }
 
-sendReminderMessage = async () => {
-    const users = await userModel.find()
-    for (const user of users) {
-        try {
-            const text = 'Remember to take your temperature! \n' + user.link
-            await sendMessage(user.chatId, text)
-            console.log('Reminder sent to: ' + user.chatId)
-        }
-        catch {
-            await deleteUser(user.chatId)
-            console.log('User deleted: ' + user.chatId)
-        }
-    }
+sendTestMessage = async (chatId) => {
+    const user = await findUser(chatId)
+    await sendReminderMessage(user.chatId)
 }
 
 sendReminders = async () => {
@@ -148,16 +137,15 @@ sendReminders = async () => {
     const hours = ('0' + date_ob.getHours()).slice(-2);
     const minutes = ('0' + date_ob.getMinutes()).slice(-2);
     const currentTime = hours + minutes
-    console.log(currentTime)
     const users = await userModel.find()
     for (const user of users) {
         try {
             const timings = user.timings
             for (const time of timings) {
                 if (time == currentTime) {
-                    console.log('Send reminder: ' + time)
+                    await sendReminderMessage(user.chatId)
+                    console.log('Reminder sent to: ' + user.chatId + ' at time ' + currentTime)
                 }
-                else console.log(time)
             }
         }
         catch {
@@ -228,25 +216,11 @@ manageMessage = async (req, res) => {
         else if (message.text == '/bug' || message.text == '/bug' + bot) {
             await sendMessage(message.chatId, 'Report a bug to my Telegram handle: @matt0852')
         }
-
-        // admin commands
-
-        else if (message.text == '/' + process.env.ADMIN + '_test') {
-            await sendReminderMessage()
-        }
     }
     res.sendStatus(200)
 }
 
 // scheduler methods
-
-const job = schedule.scheduleJob('0 8 * * *', () => {
-    sendReminderMessage()
-})
-
-const secondJob = schedule.scheduleJob('0 13 * * *', () => {
-    sendReminderMessage()
-})
 
 const everyMinJob = schedule.scheduleJob('*/1 * * * *', () => {
     sendReminders()
