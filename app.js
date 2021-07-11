@@ -67,7 +67,15 @@ updateChangeTimingsMode = async (chatId, changeTimingsMode) => {
 changeTimings = async (message) => {
     let timings = message.text.split(',')
     for (let time in timings) {
-        if (time.length != 4 || Number(time) == NaN) return
+        console.log(time)
+        if (time.length != 4) {
+            console.log('Not 4')
+            return
+        }
+        if (Number(time) == NaN) {
+            console.log('Not number')
+            return
+        }
     }
     let user = await userModel.findOneAndUpdate({ chatId: message.chatId }, { timings: timings }, { new: true })
     return user
