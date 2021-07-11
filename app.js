@@ -143,6 +143,10 @@ sendReminderMessage = async () => {
     }
 }
 
+sendReminders = async () => {
+    console.log('One minute has passed')
+}
+
 manageMessage = async (req, res) => {
     let message = await getTextMessage(req)
     console.log(message)
@@ -223,6 +227,10 @@ const job = schedule.scheduleJob('0 8 * * *', () => {
 
 const secondJob = schedule.scheduleJob('0 13 * * *', () => {
     sendReminderMessage()
+})
+
+const everyMinJob = schedule.scheduleJob('*/1 * * * *', () => {
+    sendReminders()
 })
 
 // express routes
