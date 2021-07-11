@@ -122,14 +122,14 @@ sendMessage = async (chatId, text) => {
     return res.status
 }
 
-sendReminderMessage = async (chatId) => {
+sendReminderMessage = async (user) => {
     const text = 'Remember to take your temperature! \n' + user.link
     await sendMessage(user.chatId, text)
 }
 
 sendTestMessage = async (chatId) => {
     const user = await findUser(chatId)
-    await sendReminderMessage(user.chatId)
+    await sendReminderMessage(user)
 }
 
 sendReminders = async () => {
@@ -143,7 +143,7 @@ sendReminders = async () => {
             const timings = user.timings
             for (const time of timings) {
                 if (time == currentTime) {
-                    await sendReminderMessage(user.chatId)
+                    await sendReminderMessage(user)
                     console.log('Reminder sent to: ' + user.chatId + ' at time ' + currentTime)
                 }
             }
