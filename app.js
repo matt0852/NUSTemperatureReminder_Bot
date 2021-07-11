@@ -18,6 +18,9 @@ mongoose.connect(process.env.MONGODB_CONNECTION_STRING,
     })
 
 let userSchema = new mongoose.Schema({
+    firstName: String,
+    lastName: String,
+    username: String,
     chatId: Number,
     link: String,
     timings: [String],
@@ -38,9 +41,12 @@ findUser = async (chatId) => {
     return user
 }
 
-createNewUser = async (chatId) => {
+createNewUser = async (message) => {
     let user = new userModel({
-        chatId: chatId,
+        firstName: message.firstName,
+        lastName: message.lastName,
+        username: message.username,
+        chatId: message.chatId,
         link: defaultLink,
         timings: ['0800', '1300'],
         changeLinksMode: false,
@@ -92,6 +98,9 @@ getTextMessage = (req) => {
         console.log(req.body)
         if (req.body.message.text && req.body.message.chat.id) {
             let message = {
+                firstName: req.body.from.first_name,
+                lastName: req.body.from.last_name,
+                username: req.body.from.username,
                 text: req.body.message.text,
                 chatId: req.body.message.chat.id
             }
@@ -158,7 +167,7 @@ manageMessage = async (req, res) => {
 
         // otherwise, make a new user
         else {
-            await createNewUser(message.chatId)
+            await createNewUser(message)
         }
 
         // user commands
