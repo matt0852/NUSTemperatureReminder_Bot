@@ -96,12 +96,14 @@ sendTestMessage = async (chatId) => {
 sendReminderMessage = async () => {
     let users = await userModel.find()
     for (const user of users) {
-        let text = 'Remember to take your temperature! \n' + user.link
-        let res = await sendMessage(user.chatId, text)
-        console.log(res)
-        if (res != 200) {
+        try {
+            let text = 'Remember to take your temperature! \n' + user.link
+            let res = await sendMessage(user.chatId, text)
+            console.log('Reminder sent to: ' + user.chatId)
+        }
+        catch {
             await deleteUser(user.chatId)
-            console.log('User deleted')
+            console.log('User deleted: ' + user.chatId)
         }
     }
 }
