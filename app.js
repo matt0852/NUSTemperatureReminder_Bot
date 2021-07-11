@@ -196,7 +196,7 @@ manageMessage = async (req, res) => {
             \nYour temperature taking link(s) will be sent at ' + timings + ' daily.\
             \n\
             \nUse /change to change the links that the bot will send.\
-            \nUse /timing to change the timings that the bot will send.\
+            \nUse /timing to change the reminder timings.\
             \nUse /test to send a sample reminder message.\
             \nUse /bug to report any bugs.\
             \nUse /github to view the source code.\
