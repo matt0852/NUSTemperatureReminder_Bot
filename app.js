@@ -8,7 +8,6 @@ app.use(express.json())
 const axios = require('axios')
 
 const schedule = require('node-schedule')
-const date_ob = new Date()
 
 const mongoose = require('mongoose')
 mongoose.connect(process.env.MONGODB_CONNECTION_STRING,
@@ -18,7 +17,7 @@ mongoose.connect(process.env.MONGODB_CONNECTION_STRING,
         else console.log('Connected to mongodb')
     })
 
-let userSchema = new mongoose.Schema({
+const userSchema = new mongoose.Schema({
     firstName: String,
     lastName: String,
     username: String,
@@ -29,7 +28,7 @@ let userSchema = new mongoose.Schema({
     changeTimingsMode: Boolean
 })
 
-let userModel = mongoose.model('User', userSchema)
+const userModel = mongoose.model('User', userSchema)
 
 const bot = '@NUSTemperatureReminder_Bot'
 const url = 'https://api.telegram.org/bot' + process.env.TOKEN
@@ -38,12 +37,12 @@ const defaultLink = 'https://myaces.nus.edu.sg/htd/htd'
 // db methods
 
 findUser = async (chatId) => {
-    let user = await userModel.findOne({ chatId: chatId })
+    const user = await userModel.findOne({ chatId: chatId })
     return user
 }
 
 createNewUser = async (message) => {
-    let user = new userModel({
+    const user = new userModel({
         firstName: message.firstName,
         lastName: message.lastName,
         username: message.username,
@@ -57,24 +56,24 @@ createNewUser = async (message) => {
 }
 
 updateChangeLinksMode = async (chatId, changeLinksMode) => {
-    let user = await userModel.findOneAndUpdate({ chatId: chatId }, { changeLinksMode: changeLinksMode }, { new: true })
+    const user = await userModel.findOneAndUpdate({ chatId: chatId }, { changeLinksMode: changeLinksMode }, { new: true })
     return user
 }
 
 changeUserLinks = async (message) => {
-    let user = await userModel.findOneAndUpdate({ chatId: message.chatId }, { link: message.text }, { new: true })
+    const user = await userModel.findOneAndUpdate({ chatId: message.chatId }, { link: message.text }, { new: true })
     return user
 }
 
 updateChangeTimingsMode = async (chatId, changeTimingsMode) => {
-    let user = await userModel.findOneAndUpdate({ chatId: chatId }, { changeTimingsMode: changeTimingsMode }, { new: true })
+    const user = await userModel.findOneAndUpdate({ chatId: chatId }, { changeTimingsMode: changeTimingsMode }, { new: true })
     return user
 }
 
 changeTimings = async (message) => {
-    let timings = message.text.split(',')
+    const timings = message.text.split(',')
     for (let i = 0; i < timings.length; i++) {
-        let time = timings[i]
+        const time = timings[i]
         if (time.length != 4) {
             console.log('Not 4')
             return
@@ -84,7 +83,7 @@ changeTimings = async (message) => {
             return
         }
     }
-    let user = await userModel.findOneAndUpdate({ chatId: message.chatId }, { timings: timings }, { new: true })
+    const user = await userModel.findOneAndUpdate({ chatId: message.chatId }, { timings: timings }, { new: true })
     return user
 }
 
@@ -97,7 +96,7 @@ deleteUser = async (chatId) => {
 getTextMessage = (req) => {
     try {
         if (req.body.message.text && req.body.message.chat.id) {
-            let message = {
+            const message = {
                 firstName: req.body.message.from.first_name,
                 lastName: req.body.message.from.last_name,
                 username: req.body.message.from.username,
@@ -114,7 +113,7 @@ getTextMessage = (req) => {
 }
 
 sendMessage = async (chatId, text) => {
-    let res = await axios.get(url + '/sendMessage', {
+    const res = await axios.get(url + '/sendMessage', {
         params: {
             chat_id: chatId,
             text: text
@@ -124,17 +123,17 @@ sendMessage = async (chatId, text) => {
 }
 
 sendTestMessage = async (chatId) => {
-    let user = await findUser(chatId)
-    let text = 'Remember to take your temperature! \n' + user.link
+    const user = await findUser(chatId)
+    const text = 'Remember to take your temperature! \n' + user.link
     await sendMessage(user.chatId, text)
 }
 
 sendReminderMessage = async () => {
-    let users = await userModel.find()
+    const users = await userModel.find()
     for (const user of users) {
         try {
-            let text = 'Remember to take your temperature! \n' + user.link
-            let res = await sendMessage(user.chatId, text)
+            const text = 'Remember to take your temperature! \n' + user.link
+            const res = await sendMessage(user.chatId, text)
             console.log('Reminder sent to: ' + user.chatId)
         }
         catch {
@@ -145,18 +144,19 @@ sendReminderMessage = async () => {
 }
 
 sendReminders = async () => {
-    let hours = ('0' + date_ob.getHours()).slice(-2);
-    let minutes = ('0' + date_ob.getMinutes()).slice(-2);
-    let time = hours + minutes
+    const date_ob = new Date()
+    const hours = ('0' + date_ob.getHours()).slice(-2);
+    const minutes = ('0' + date_ob.getMinutes()).slice(-2);
+    const time = hours + minutes
     console.log(time)
 }
 
 manageMessage = async (req, res) => {
-    let message = await getTextMessage(req)
+    const message = await getTextMessage(req)
     console.log(message)
     if (message) {
         // find the user who sent the message, if any
-        let user = await findUser(message.chatId)
+        const user = await findUser(message.chatId)
 
         // if the user exists, check if the user is currently changing the links
         if (user) {
@@ -167,7 +167,7 @@ manageMessage = async (req, res) => {
             }
             if (user.changeTimingsMode == true) {
                 await updateChangeTimingsMode(message.chatId, false)
-                let user = await changeTimings(message)
+                const user = await changeTimings(message)
                 if (user) await sendMessage(message.chatId, 'Your timings have been updated.')
                 else await sendMessage(message.chatId, 'Error - wrong formatting. Try again with /timing.')
             }
