@@ -40,7 +40,8 @@ createNewUser = async (chatId) => {
     let user = new userModel({
         chatId: chatId,
         link: defaultLink,
-        changeLinksMode: false
+        changeLinksMode: false,
+        changeTimingsMode: false
     })
     await user.save()
 }
@@ -52,6 +53,11 @@ updateChangeLinksMode = async (chatId, changeLinksMode) => {
 
 changeUserLinks = async (message) => {
     let user = await userModel.findOneAndUpdate({ chatId: message.chatId }, { link: message.text }, { new: true })
+    return user
+}
+
+updateChangeTimingsMode = async (chatId, changeTimingsMode) => {
+    let user = await userModel.findOneAndUpdate({ chatId: chatId }, { changeTimingsMode: changeTimingsMode }, { new: true })
     return user
 }
 
@@ -121,6 +127,10 @@ manageMessage = async (req, res) => {
                 await changeUserLinks(message)
                 await sendMessage(message.chatId, 'Your link(s) have been updated.')
             }
+            if (user.changeTimingsMode == true) {
+                await updateChangeTimingsMode(message.chatId, false)
+                await sendMessage(message.chatId, 'Your timings have been updated.')
+            }
         }
 
         // otherwise, make a new user
@@ -148,6 +158,11 @@ manageMessage = async (req, res) => {
 
         else if (message.text == '/test' || message.text == '/test' + bot) {
             await sendTestMessage(message.chatId)
+        }
+
+        else if (message.text == '/timing' || message.text == '/timing' + bot) {
+            await updateChangeTimingsMode(message.chatId, true)
+            await sendMessage(message.chatId, 'Please send two new timings in the format HHMM,HHMM\nFor instance, 0800,1300)')
         }
 
         else if (message.text == '/github' || message.text == '/github' + bot) {
