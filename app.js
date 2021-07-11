@@ -20,6 +20,8 @@ mongoose.connect(process.env.MONGODB_CONNECTION_STRING,
 let userSchema = new mongoose.Schema({
     chatId: Number,
     link: String,
+    timing1: String,
+    timing2: String,
     changeLinksMode: Boolean,
     changeTimingsMode: Boolean
 })
@@ -41,6 +43,8 @@ createNewUser = async (chatId) => {
     let user = new userModel({
         chatId: chatId,
         link: defaultLink,
+        timing1: '0800',
+        timing2: '1300',
         changeLinksMode: false,
         changeTimingsMode: false
     })
@@ -59,6 +63,12 @@ changeUserLinks = async (message) => {
 
 updateChangeTimingsMode = async (chatId, changeTimingsMode) => {
     let user = await userModel.findOneAndUpdate({ chatId: chatId }, { changeTimingsMode: changeTimingsMode }, { new: true })
+    return user
+}
+
+changeTimings = async(message) => {
+    let timings = message.text.split(',')
+    let user = await userModel.findOneAndUpdate({ chatId: message.chatId }, { timing1: timings[0], timing2: timings[1] }, { new: true })
     return user
 }
 
@@ -162,8 +172,7 @@ manageMessage = async (req, res) => {
         }
 
         else if (message.text == '/timing' || message.text == '/timing' + bot) {
-            let user = await updateChangeTimingsMode(message.chatId, true)
-            console.log(user)
+            await updateChangeTimingsMode(message.chatId, true)
             await sendMessage(message.chatId, 'Please send two new timings in the format HHMM,HHMM\nFor instance, 0800,1300')
         }
 
