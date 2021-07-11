@@ -133,7 +133,7 @@ sendReminderMessage = async () => {
     for (const user of users) {
         try {
             const text = 'Remember to take your temperature! \n' + user.link
-            const res = await sendMessage(user.chatId, text)
+            await sendMessage(user.chatId, text)
             console.log('Reminder sent to: ' + user.chatId)
         }
         catch {
@@ -147,13 +147,28 @@ sendReminders = async () => {
     const date_ob = new Date()
     const hours = ('0' + date_ob.getHours()).slice(-2);
     const minutes = ('0' + date_ob.getMinutes()).slice(-2);
-    const time = hours + minutes
-    console.log(time)
+    const currentTime = hours + minutes
+    console.log(currentTime)
+    const users = await userModel.find()
+    for (const user of users) {
+        try {
+            const timings = user.timings
+            for (const time of timings) {
+                if (time == currentTime) {
+                    console.log('Send reminder: ' + time)
+                }
+                else console.log(time)
+            }
+        }
+        catch {
+            await deleteUser(user.chatId)
+            console.log('User deleted: ' + user.chatId)
+        }
+    }
 }
 
 manageMessage = async (req, res) => {
     const message = await getTextMessage(req)
-    console.log(message)
     if (message) {
         // find the user who sent the message, if any
         const user = await findUser(message.chatId)
