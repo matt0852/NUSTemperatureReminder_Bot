@@ -67,7 +67,7 @@ updateChangeTimingsMode = async (chatId, changeTimingsMode) => {
 changeTimings = async (message) => {
     let timings = message.text.split(',')
     console.log(timings)
-    for (let time in timings) {
+    for (const time in timings) {
         console.log(time)
         if (time.length != 4) {
             console.log('Not 4')
