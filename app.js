@@ -185,7 +185,7 @@ manageMessage = async (req, res) => {
         if (message.text == '/start' || message.text == '/start' + bot) {
             const user = await findUser(message.chatId)
             const arrayOfTimings = user.timings
-            const timings = ''
+            var timings = ''
             for (let i = 0; i < arrayOfTimings.length; i++) {
                 timings += arrayOfTimings[i]
                 if (i != arrayOfTimings - 1) timings += ', '
