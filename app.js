@@ -20,7 +20,8 @@ mongoose.connect(process.env.MONGODB_CONNECTION_STRING,
 let userSchema = new mongoose.Schema({
     chatId: Number,
     link: String,
-    changeLinksMode: Boolean
+    changeLinksMode: Boolean,
+    changeTimingsMode: Boolean
 })
 
 let userModel = mongoose.model('User', userSchema)
