@@ -95,7 +95,6 @@ deleteUser = async (chatId) => {
 
 getTextMessage = (req) => {
     try {
-        console.log(req.body)
         if (req.body.message.text && req.body.message.chat.id) {
             let message = {
                 firstName: req.body.from.first_name,
@@ -146,6 +145,7 @@ sendReminderMessage = async () => {
 
 manageMessage = async (req, res) => {
     let message = await getTextMessage(req)
+    console.log(message)
     if (message) {
         // find the user who sent the message, if any
         let user = await findUser(message.chatId)
