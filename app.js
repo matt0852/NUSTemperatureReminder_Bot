@@ -172,7 +172,8 @@ manageMessage = async (req, res) => {
                 await updateChangeTimingsMode(message.chatId, false)
                 const user = await changeTimings(message)
                 if (user) await sendMessage(message.chatId, 'Your timings have been updated. Use /help to see your current timings.')
-                else await sendMessage(message.chatId, 'Error - wrong formatting. Try again with /timing.')
+                else await sendMessage(message.chatId, 'Error - wrong formatting. Make sure you did not add a space after your comma(s). \
+                \nUse /timing to try again.')
             }
         }
 
